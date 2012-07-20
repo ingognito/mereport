@@ -26,7 +26,7 @@ class Scanner
     return [] unless depth > 0 && sha != nil && sha != options[:target]
     
     commit = @github.git_data.commits.get(@user, @repo, sha)
-    return [] if options[:until] && options[:until].to_i > Time.parse(commit.committer[:date])
+    return [] if options[:until] && options[:until].to_i > Time.parse(commit.committer[:date]).to_i
     
     rv = []
     next_on_branch = commit.parents.first

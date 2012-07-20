@@ -1,16 +1,18 @@
 
 class PullCommit < MergeCommit
-  attr_reader :pull
-  def initialize(commit, github, user, repository, pull_id, pull_branch)    
-    super(commit, user, repository)
-    @pull_id = pull_id
-    @pull = github.pull_requests.get(user, repository, pull_id)
+  def initialize(repo, commit, id, branch)
+    super(repo, commit)
+    @pull_id = id
   end
-  
+
+  def pull
+    @pull ||= @repo.pull(@pull_id)
+  end
+
   def pull?; true; end
   
   def body
-    @pull[:body]
+    pull[:body]
   end
   
   def id
@@ -22,11 +24,11 @@ class PullCommit < MergeCommit
   end
 
   def who
-    @pull.user.login
+    pull.user.login
   end
   
   def title
-    @pull.title
+    pull.title
   end
   
 end

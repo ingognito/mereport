@@ -1,9 +1,9 @@
 
 class MergeCommit < Commit
   attr_accessor :merges
-  def initialize(commit, user, repo)
-    super(commit, user, repo)
-    @merges = []
+  def initialize(repo, commit)
+    super(repo, commit)
+    @merges = commit.parents[1..-1]    
   end
   
   def date_line

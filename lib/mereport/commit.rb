@@ -2,18 +2,14 @@ require 'time'
 
 class Commit
   attr_reader :commit
-  def initialize(commit, user, repo)
-    @commit = commit
-    @user = user
-    @repo = repo
-  end
 
-  def merged?
-    false
+  def initialize(repo, commit)
+    @repo = repo
+    @commit = commit
   end
   
-  def pull?
-    false
+  def next
+    @repo.commit(@commit.parents.first.sha) unless @commit.parents.empty?
   end
 
   def sha
@@ -25,7 +21,7 @@ class Commit
   end
   
   def url
-    "https://github.com/#{@user}/#{@repo}/commit/#{id}"
+    "#{@repo.url}/commit/#{id}"
   end
   
   def id

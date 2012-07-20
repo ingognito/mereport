@@ -8,7 +8,7 @@ module MergeReport
     end
     
     def [](key)
-      @options[key] || self.send(key)
+      @options[key] # || self.respond_to?(key) ? self.send(key) : nil
     end
 
     def self.parse(args)

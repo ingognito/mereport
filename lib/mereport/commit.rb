@@ -48,8 +48,8 @@ class Commit
     commit.message
   end
 
-  def links
-    body.scan %r(https?://[-.a-zA-Z0-9_/]*)    
+  def links(regex = %r(https?://[-.a-zA-Z0-9_/]*))
+    body.scan regex if regex    
   end
 
   def long_message

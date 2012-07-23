@@ -14,7 +14,6 @@ end
 options = MergeReport::CommandLine.parse(ARGV)
 
 github = Github.new(login: options.login, password: options.password)
-scanner =  Scanner.new(github, options.user, options.repository)
 
 repo = Repository.new(github, options.user, options.repository)
 if options[:actions].include? :merge or options[:actions].include? :commits

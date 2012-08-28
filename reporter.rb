@@ -2,6 +2,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__) + "/lib")
 
 require 'mereport'
 require 'mereport/cli'
+require 'mereport/browser'
 
 require 'github_api'
 
@@ -17,20 +18,25 @@ github = Github.new(login: options.login, password: options.password)
 
 repo = Repository.new(github, options.user, options.repository)
 if options[:actions].include? :merge or options[:actions].include? :commits
-  commit = repo.commit(repo.branches['master'])
+  commit = repo.commit(options.revision || repo.branches['master'])
   other = []
 
   if options[:actions].include? :merge
     format_title "Pull requests merged since #{options[:until] || options[:target]}"
   end
 
+  links = []
   while commit && commit.sha != options[:target] && (options[:until] || 0).to_i < commit.commited_at.to_i
     if commit.respond_to?(:pull)
       if options[:actions].include? :merge
         puts "* #{commit}"
         puts "  #{commit.date_line}"
-        commit.links.each do |link|
-          puts "  - #{link}"
+        links << commit.url
+        if options.links
+          commit.links(%r(https?://[-.a-zA-Z0-9_/]*#{options.links}[-.a-zA-Z0-9_/]*)).each do |link|
+            puts "  - #{link}"
+            links << commit.links
+          end
         end
       end
     else
@@ -38,23 +44,37 @@ if options[:actions].include? :merge or options[:actions].include? :commits
     end
     commit = commit.next    
   end
+  if !links.empty? && options.open_in_browser
+    open_in_browser(links)
+    links = []
+  end
   if !other.empty? and options[:actions].include? :commits
     format_title "Other commits to master since #{options[:until] || options[:target]}"
     other.each do |c|
       puts "* #{c}"
       puts "  #{c.date_line}"
+      links << c.url
       c.links(%r(https?://[-.a-zA-Z0-9_/]*#{options.links}[-.a-zA-Z0-9_/]*)).each do |link|
         puts "  - #{link}"
+        links << link
       end
     end
+  end
+  if !links.empty? && options.open_in_browser
+    open_in_browser(links)
   end
 end
 
 if options[:actions].include? :pull
   pulls = repo.pulls
   format_title "There are #{pulls.length} open pull requests"
+  links = []
   pulls.each do |req|
     puts "* #{req.number}: #{req.title} (#{req.html_url}) [#{req.user.login}]"
+    links << req.html_url
+  end
+  if !links.empty? && options.open_in_browser
+    open_in_browser(links)
   end
 
   if options[:actions].include? :actions

@@ -1,7 +1,7 @@
 
 module MergeReport
   class CommandLine 
-    attr_accessor :login, :password, :user, :repository, :revision , :links
+    attr_accessor :login, :password, :user, :repository, :revision , :links, :open_in_browser
     attr_accessor :options  
     def initialize()
       @options = {actions: [:merge, :commits]}
@@ -84,6 +84,10 @@ module MergeReport
           else
             options.options[:actions].delete(:actions)
           end
+        end
+
+        opts.on( '-b', '--[no-]browser', "Negated forms" ) do |n|
+          options.open_in_browser = n
         end
 
       end

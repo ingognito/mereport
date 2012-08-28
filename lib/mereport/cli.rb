@@ -34,7 +34,7 @@ module MergeReport
           options.repository = repo
         end 
 
-        opts.on("-R", "--revisions SHA", "GitHub SHA to end with") do |revision|
+        opts.on("-R", "--revisions SHA", "GitHub SHA to start with") do |revision|
           options.revision = revision
         end 
 
@@ -42,11 +42,11 @@ module MergeReport
           options.options[:target] = revision
         end 
 
-        opts.on("-D", "--depth DEPTH", "GitHub SHA to end with") do |depth|
+        opts.on("-D", "--depth DEPTH", "Depth used for backtracking") do |depth|
           options.options[:depth] = depth.to_i
         end 
 
-        opts.on("-s", "--since TIME", "GitHub SHA to end with") do |time|
+        opts.on("-s", "--since TIME", "Show only commits prior to TIME") do |time|
           options.options[:until] = Time.parse(time)
         end 
 
@@ -54,7 +54,7 @@ module MergeReport
           options.links = links
         end
 
-        opts.on( '-m', '--[no-]merge', "Negated forms" ) do |n|
+        opts.on( '-m', '--[no-]merge', "Show/don't show merge reports (default: on)" ) do |n|
           if n
             options.options[:actions] << :merge
           else
@@ -62,7 +62,7 @@ module MergeReport
           end
         end
 
-        opts.on( '-c', '--[no-]commits', "Negated forms" ) do |n|
+        opts.on( '-c', '--[no-]commits', "Show/don't show commits to master (default: on)" ) do |n|
           if n
             options.options[:actions] << :commits
           else
@@ -70,7 +70,7 @@ module MergeReport
           end
         end
 
-        opts.on( '-P', '--[no-]pull', "Negated forms" ) do |n|
+        opts.on( '-P', '--[no-]pull', "Show/don't show pull requests (default: off)" ) do |n|
           if n
             options.options[:actions] << :pull
           else
@@ -78,7 +78,7 @@ module MergeReport
           end
         end
 
-        opts.on( '-a', '--[no-]actions', "Negated forms" ) do |n|
+        opts.on( '-a', '--[no-]actions', "Show/don't show actions  (default: off)" ) do |n|
           if n
             options.options[:actions] << :actions
           else
@@ -86,7 +86,7 @@ module MergeReport
           end
         end
 
-        opts.on( '-b', '--[no-]browser', "Negated forms" ) do |n|
+        opts.on( '-b', '--[no-]browser', "Open all links in new browser window. Only works under OS X.  (default: off)" ) do |n|
           options.open_in_browser = n
         end
 
